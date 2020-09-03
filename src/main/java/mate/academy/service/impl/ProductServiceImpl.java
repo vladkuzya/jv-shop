@@ -1,11 +1,11 @@
 package mate.academy.service.impl;
 
+import java.util.List;
 import mate.academy.dao.ProductDao;
 import mate.academy.lib.Inject;
 import mate.academy.lib.Service;
 import mate.academy.model.Product;
 import mate.academy.service.ProductService;
-import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {

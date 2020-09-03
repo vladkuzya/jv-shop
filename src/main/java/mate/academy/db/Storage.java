@@ -1,9 +1,8 @@
 package mate.academy.db;
 
-import mate.academy.model.Product;
-
 import java.util.ArrayList;
 import java.util.List;
+import mate.academy.model.Product;
 
 public class Storage {
     public static final List<Product> products = new ArrayList<>();

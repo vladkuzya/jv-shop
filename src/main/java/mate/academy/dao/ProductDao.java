@@ -1,9 +1,8 @@
 package mate.academy.dao;
 
-import mate.academy.model.Product;
-
 import java.util.List;
 import java.util.Optional;
+import mate.academy.model.Product;
 
 public interface ProductDao {
     Product create(Product product);

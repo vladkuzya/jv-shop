@@ -1,8 +1,7 @@
 package mate.academy.service;
 
-import mate.academy.model.Product;
-
 import java.util.List;
+import mate.academy.model.Product;
 
 public interface ProductService {
     Product create(Product product);

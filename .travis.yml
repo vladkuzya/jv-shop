@@ -1,4 +1,8 @@
 language: java
-rvm:
-  - 2.2
-  - jruby
+jdk:
+  - openjdk11
+script:
+  - mvn clean install
+cache:
+  directories:
+    - $HOME/.m2

@@ -22,6 +22,7 @@ public class Application {
         iphone8.setPrice(400);
         productService.update(iphone8);
         System.out.println(productService.getAll());
+
         System.out.println(productService.get(iphone7.getId()));
 
         productService.delete(iphone11.getId());

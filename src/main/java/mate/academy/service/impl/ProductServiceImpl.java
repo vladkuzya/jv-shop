@@ -5,7 +5,6 @@ import mate.academy.lib.Inject;
 import mate.academy.lib.Service;
 import mate.academy.model.Product;
 import mate.academy.service.ProductService;
-
 import java.util.List;
 
 @Service
@@ -20,7 +19,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product get(Long id) {
-        return productDao.getByID(id).get();
+        return productDao.getById(id).get();
     }
 
     @Override

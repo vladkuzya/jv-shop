@@ -8,11 +8,11 @@ import java.util.Optional;
 public interface ProductDao {
     Product create(Product product);
 
-    Optional<Product> getByID(Long productId);
+    Optional<Product> getById(Long productId);
 
     Product update(Product product);
 
-    boolean deleteById(long productId);
+    boolean deleteById(Long productId);
 
     List<Product> getAllProducts();
 }

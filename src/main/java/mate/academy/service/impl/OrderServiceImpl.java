@@ -10,6 +10,7 @@ import mate.academy.lib.Service;
 import mate.academy.model.Order;
 import mate.academy.model.ShoppingCart;
 import mate.academy.service.OrderService;
+import mate.academy.service.ShoppingCartService;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -17,13 +18,13 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
 
     @Inject
-    private ShoppingCartDao shoppingCartDao;
+    private ShoppingCartService shoppingCartService;
 
     @Override
     public Order completeOrder(ShoppingCart shoppingCart) {
         Order order = new Order(shoppingCart.getUserId());
         order.setProducts(new ArrayList<>(shoppingCart.getProducts()));
-        shoppingCart.getProducts().removeAll(shoppingCart.getProducts());
+        shoppingCartService.clear(shoppingCart);
         return orderDao.create(order);
     }
 

@@ -29,9 +29,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public boolean deleteProduct(ShoppingCart shoppingCart, Product product) {
-        shoppingCart.getProducts().remove(product);
-        shoppingCartDao.update(shoppingCart);
-        return true;
+        if (shoppingCart.getProducts().remove(product)) {
+            shoppingCartDao.update(shoppingCart);
+            return true;
+        }
+        return false;
     }
 
     @Override

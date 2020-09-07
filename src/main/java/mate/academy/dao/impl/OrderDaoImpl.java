@@ -8,13 +8,11 @@ import mate.academy.dao.OrderDao;
 import mate.academy.db.Storage;
 import mate.academy.lib.Dao;
 import mate.academy.model.Order;
-import mate.academy.model.ShoppingCart;
 
 @Dao
 public class OrderDaoImpl implements OrderDao {
     @Override
-    public Order create(ShoppingCart shoppingCart) {
-        Order order = new Order(shoppingCart.getUserId());
+    public Order create(Order order) {
         Storage.addOrder(order);
         return order;
     }

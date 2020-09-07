@@ -3,10 +3,9 @@ package mate.academy.dao;
 import java.util.List;
 import java.util.Optional;
 import mate.academy.model.Order;
-import mate.academy.model.ShoppingCart;
 
 public interface OrderDao {
-    Order create(ShoppingCart shoppingCart);
+    Order create(Order order);
 
     Optional<Order> getById(Long orderId);
 

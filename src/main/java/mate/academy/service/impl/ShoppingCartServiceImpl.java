@@ -1,6 +1,5 @@
 package mate.academy.service.impl;
 
-import mate.academy.dao.ProductDao;
 import mate.academy.dao.ShoppingCartDao;
 import mate.academy.lib.Inject;
 import mate.academy.lib.Service;
@@ -12,9 +11,6 @@ import mate.academy.service.ShoppingCartService;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Inject
     private ShoppingCartDao shoppingCartDao;
-
-    @Inject
-    private ProductDao productDao;
 
     @Override
     public ShoppingCart create(ShoppingCart shoppingCart) {
@@ -44,7 +40,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCart getByUserId(Long userId) {
-        return shoppingCartDao.getById(userId).get();
+        return shoppingCartDao.getByUserId(userId).get();
     }
 
     @Override

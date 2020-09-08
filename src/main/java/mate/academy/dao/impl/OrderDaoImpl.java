@@ -32,6 +32,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public List<Order> getAll() {
+        return Storage.orders;
+    }
+
+    @Override
     public Order update(Order order) {
         IntStream.range(0, Storage.orders.size())
                 .filter(i -> Storage.orders.get(i).getId().equals(order.getId()))
@@ -40,8 +45,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public boolean deleteById(Long orderId) {
-        return Storage.orders.removeIf(order -> order.getId().equals(orderId));
+    public boolean deleteById(Long id) {
+        return Storage.orders.removeIf(order -> order.getId().equals(id));
     }
-
 }

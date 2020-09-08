@@ -65,19 +65,19 @@ public class Application {
         shoppingCartService.addProduct(shoppingCartVlad, iphone7);
         shoppingCartService.addProduct(shoppingCartVlad, iphoneX);
         shoppingCartService.addProduct(shoppingCartRoman, iphone8);
-        System.out.println(shoppingCartService.getByUserId(vlad.getId()));
-        System.out.println(shoppingCartService.getByUserId(roman.getId()));
+        System.out.println(shoppingCartService.get(vlad.getId()));
+        System.out.println(shoppingCartService.get(roman.getId()));
 
         shoppingCartService.deleteProduct(shoppingCartVlad, iphone7);
-        System.out.println(shoppingCartService.getByUserId(vlad.getId()));
+        System.out.println(shoppingCartService.get(vlad.getId()));
 
         shoppingCartService.clear(shoppingCartRoman);
-        System.out.println(shoppingCartService.getByUserId(roman.getId()));
+        System.out.println(shoppingCartService.get(roman.getId()));
 
         shoppingCartService.delete(roman.getId());
         System.out.println();
 
-        orderService.completeOrder(shoppingCartService.getByUserId(vlad.getId()));
+        orderService.completeOrder(shoppingCartService.get(vlad.getId()));
         System.out.println(orderService.getUserOrders(vlad.getId()));
 
         System.out.println(orderService.getAll());

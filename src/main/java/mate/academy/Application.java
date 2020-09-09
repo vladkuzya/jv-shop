@@ -35,7 +35,7 @@ public class Application {
         productService.update(iphone8);
         System.out.println(productService.getAll());
 
-        System.out.println(productService.get(iphone7.getId()));
+        System.out.println(productService.getById(iphone7.getId()));
 
         productService.delete(iphone11.getId());
         System.out.println(productService.getAll());
@@ -52,7 +52,7 @@ public class Application {
 
         vlad.setPassword("0110");
         userService.update(vlad);
-        System.out.println(userService.get(vlad.getId()));
+        System.out.println(userService.getById(vlad.getId()));
 
         userService.delete(sasha.getId());
         System.out.println(userService.getAll());
@@ -65,11 +65,11 @@ public class Application {
         shoppingCartService.addProduct(shoppingCartVlad, iphone7);
         shoppingCartService.addProduct(shoppingCartVlad, iphoneX);
         shoppingCartService.addProduct(shoppingCartRoman, iphone8);
-        System.out.println(shoppingCartService.getByUserId(vlad.getId()));
-        System.out.println(shoppingCartService.getByUserId(roman.getId()));
+        System.out.println(shoppingCartService.getById(vlad.getId()));
+        System.out.println(shoppingCartService.getById(roman.getId()));
 
         shoppingCartService.deleteProduct(shoppingCartVlad, iphone7);
-        System.out.println(shoppingCartService.getByUserId(vlad.getId()));
+        System.out.println(shoppingCartService.getById(vlad.getId()));
 
         shoppingCartService.clear(shoppingCartRoman);
         System.out.println(shoppingCartService.getByUserId(roman.getId()));
@@ -77,10 +77,9 @@ public class Application {
         shoppingCartService.delete(roman.getId());
         System.out.println();
 
-        orderService.completeOrder(shoppingCartService.getByUserId(vlad.getId()));
+        orderService.completeOrder(shoppingCartService.getById(vlad.getId()));
         System.out.println(orderService.getUserOrders(vlad.getId()));
 
         System.out.println(orderService.getAll());
-
     }
 }

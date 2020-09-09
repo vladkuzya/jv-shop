@@ -1,5 +1,6 @@
 package mate.academy.dao.impl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import mate.academy.dao.ShoppingCartDao;
@@ -30,6 +31,11 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
     }
 
     @Override
+    public List<ShoppingCart> getAll() {
+        return Storage.shoppingCarts;
+    }
+
+    @Override
     public ShoppingCart update(ShoppingCart shoppingCart) {
         IntStream.range(0, Storage.shoppingCarts.size())
                 .filter(i -> Storage.shoppingCarts.get(i).getId().equals(shoppingCart.getId()))
@@ -38,7 +44,7 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
     }
 
     @Override
-    public boolean deleteById(Long cartId) {
+    public boolean delete(Long cartId) {
         return Storage.shoppingCarts.removeIf(shoppingCart -> shoppingCart.getId().equals(cartId));
     }
 }

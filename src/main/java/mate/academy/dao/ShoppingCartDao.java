@@ -3,14 +3,6 @@ package mate.academy.dao;
 import java.util.Optional;
 import mate.academy.model.ShoppingCart;
 
-public interface ShoppingCartDao {
-    ShoppingCart create(ShoppingCart shoppingCart);
-
-    Optional<ShoppingCart> getById(Long cartId);
-
+public interface ShoppingCartDao extends GenericDao<ShoppingCart, Long> {
     Optional<ShoppingCart> getByUserId(Long userId);
-
-    ShoppingCart update(ShoppingCart shoppingCart);
-
-    boolean deleteById(Long cartId);
 }

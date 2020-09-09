@@ -18,13 +18,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product get(Long id) {
+    public Product getById(Long id) {
         return productDao.getById(id).get();
     }
 
     @Override
     public List<Product> getAll() {
-        return productDao.getAllProducts();
+        return productDao.getAll();
     }
 
     @Override
@@ -34,6 +34,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean delete(Long id) {
-        return productDao.deleteById(id);
+        return productDao.delete(id);
     }
 }

@@ -72,7 +72,7 @@ public class Application {
         System.out.println(shoppingCartService.getById(vlad.getId()));
 
         shoppingCartService.clear(shoppingCartRoman);
-        System.out.println(shoppingCartService.getById(roman.getId()));
+        System.out.println(shoppingCartService.getByUserId(roman.getId()));
 
         shoppingCartService.delete(roman.getId());
         System.out.println();

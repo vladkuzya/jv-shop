@@ -23,10 +23,15 @@ public class AddNewProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        String name = req.getParameter("name");
-        int price = Integer.parseInt(req.getParameter("price"));
-
-        productService.create(new Product(name, price));
-        resp.sendRedirect(req.getContextPath() + "/");
+        if (req.getParameter("name").isBlank()
+                || req.getParameter("price").isBlank()) {
+            req.setAttribute("message", "Name or price fields are blank");
+            req.getRequestDispatcher("/WEB-INF/views/products/addProduct.jsp").forward(req,resp);
+        } else {
+            String name = req.getParameter("name");
+            int price = Integer.parseInt(req.getParameter("price"));
+            productService.create(new Product(name, price));
+            resp.sendRedirect(req.getContextPath() + "/");
+        }
     }
 }

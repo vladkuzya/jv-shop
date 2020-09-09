@@ -10,7 +10,7 @@ import mate.academy.model.User;
 import mate.academy.service.UserService;
 
 public class RegistrationController extends HttpServlet {
-    private static Injector injector = Injector.getInstance("mate.academy");
+    private static final Injector injector = Injector.getInstance("mate.academy");
     private static final UserService userService = (UserService) injector
             .getInstance(UserService.class);
 
@@ -32,7 +32,8 @@ public class RegistrationController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/");
         } else {
             req.setAttribute("message", "Your password and repeat password aren't the same");
-            req.getRequestDispatcher("/WEB-INF/views/registration.jsp").forward(req,resp);
+            req.setAttribute("login", login);
+            req.getRequestDispatcher("/WEB-INF/views/users/registration.jsp").forward(req,resp);
         }
     }
 }

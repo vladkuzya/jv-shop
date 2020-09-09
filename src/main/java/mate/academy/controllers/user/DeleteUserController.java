@@ -9,7 +9,7 @@ import mate.academy.lib.Injector;
 import mate.academy.service.UserService;
 
 public class DeleteUserController extends HttpServlet {
-    private static Injector injector = Injector.getInstance("mate.academy");
+    private static final Injector injector = Injector.getInstance("mate.academy");
     private static final UserService userService = (UserService) injector
             .getInstance(UserService.class);
 

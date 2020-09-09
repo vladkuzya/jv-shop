@@ -41,9 +41,9 @@ public class Application {
         System.out.println(productService.getAll());
         System.out.println();
 
-        User vlad = new User("Vlad", "kuzya", "12345");
-        User roman = new User("Roman", "rome", "999");
-        User sasha = new User("Sasha", "sanek", "1337");
+        User vlad = new User("Vlad", "kuzya");
+        User roman = new User("Roman", "rome");
+        User sasha = new User("Sasha", "sanek");
 
         userService.create(vlad);
         userService.create(roman);

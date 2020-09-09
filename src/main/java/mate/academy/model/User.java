@@ -2,12 +2,10 @@ package mate.academy.model;
 
 public class User {
     private Long id;
-    private String name;
     private String login;
     private String password;
 
-    public User(String name, String login, String password) {
-        this.name = name;
+    public User(String login, String password) {
         this.login = login;
         this.password = password;
     }
@@ -18,14 +16,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getLogin() {
@@ -48,7 +38,6 @@ public class User {
     public String toString() {
         return "User{"
                 + "id=" + id
-                + ", name='" + name + '\''
                 + ", login='" + login + '\''
                 + ", password='" + password + '\'' + '}';
     }

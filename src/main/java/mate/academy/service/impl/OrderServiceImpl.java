@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order get(Long orderId) {
+    public Order getById(Long orderId) {
         return orderDao.getById(orderId).get();
     }
 
@@ -53,6 +53,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean delete(Long orderId) {
-        return orderDao.deleteById(orderId);
+        return orderDao.delete(orderId);
     }
 }

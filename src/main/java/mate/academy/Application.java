@@ -81,6 +81,5 @@ public class Application {
         System.out.println(orderService.getUserOrders(vlad.getId()));
 
         System.out.println(orderService.getAll());
-
     }
 }

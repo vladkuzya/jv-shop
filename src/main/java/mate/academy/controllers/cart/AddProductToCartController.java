@@ -1,7 +1,6 @@
 package mate.academy.controllers.cart;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +22,8 @@ public class AddProductToCartController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Long id = Long.parseLong(req.getParameter("id"));
-        try {
-            ShoppingCart shoppingCart = shoppingCartService.getByUserId(USER_ID);
-            shoppingCartService.addProduct(shoppingCart, productService.getById(id));
-        } catch (NoSuchElementException e) {
-            ShoppingCart shoppingCart = new ShoppingCart(USER_ID);
-            shoppingCartService.create(shoppingCart);
-            shoppingCartService.addProduct(shoppingCart, productService.getById(id));
-        }
+        ShoppingCart shoppingCart = shoppingCartService.getByUserId(USER_ID);
+        shoppingCartService.addProduct(shoppingCart, productService.getById(id));
         resp.sendRedirect(req.getContextPath() + "/products/all");
     }
 }

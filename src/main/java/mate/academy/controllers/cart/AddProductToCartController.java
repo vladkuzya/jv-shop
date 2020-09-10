@@ -24,6 +24,6 @@ public class AddProductToCartController extends HttpServlet {
         Long id = Long.parseLong(req.getParameter("id"));
         ShoppingCart shoppingCart = shoppingCartService.getByUserId(USER_ID);
         shoppingCartService.addProduct(shoppingCart, productService.getById(id));
-        resp.sendRedirect(req.getContextPath() + "/products/all");
+        resp.sendRedirect(req.getContextPath() + "/products/all_user");
     }
 }

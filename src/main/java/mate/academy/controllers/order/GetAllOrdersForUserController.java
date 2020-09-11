@@ -21,6 +21,6 @@ public class GetAllOrdersForUserController extends HttpServlet {
             throws ServletException, IOException {
         List<Order> ordersList = orderService.getUserOrders(USER_ID);
         req.setAttribute("orders", ordersList);
-        req.getRequestDispatcher("/WEB-INF/views/orders/all_user.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/orders/all-user.jsp").forward(req, resp);
     }
 }

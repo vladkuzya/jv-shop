@@ -20,6 +20,6 @@ public class GetAllProductsForUserController extends HttpServlet {
             throws ServletException, IOException {
         List<Product> allProducts = productService.getAll();
         req.setAttribute("products", allProducts);
-        req.getRequestDispatcher("/WEB-INF/views/products/all_user.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/views/products/all-user.jsp").forward(req,resp);
     }
 }

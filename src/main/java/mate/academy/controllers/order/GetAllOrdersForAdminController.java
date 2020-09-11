@@ -20,6 +20,6 @@ public class GetAllOrdersForAdminController extends HttpServlet {
             throws ServletException, IOException {
         List<Order> ordersList = orderService.getAll();
         req.setAttribute("orders", ordersList);
-        req.getRequestDispatcher("/WEB-INF/views/orders/all_admin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/orders/all-admin.jsp").forward(req, resp);
     }
 }

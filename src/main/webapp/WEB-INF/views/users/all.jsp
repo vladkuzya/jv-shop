@@ -5,6 +5,7 @@
     <title>All users</title>
 </head>
 <body>
+<%@include file="/WEB-INF/views/header.jsp" %>
 <h1>All users page</h1>
 <table border="1">
     <tr>
@@ -25,6 +26,6 @@
         </tr>
     </c:forEach>
 </table>
-<a href="${pageContext.request.contextPath}/">Go to main</a>
+<a class="btn btn-dark" href="${pageContext.request.contextPath}/" role="button">Go to main</a>
 </body>
 </html>

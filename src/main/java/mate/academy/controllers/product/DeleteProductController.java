@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import mate.academy.lib.Injector;
 import mate.academy.service.ProductService;
 
-public class DeleteProductFromStoreController extends HttpServlet {
+public class DeleteProductController extends HttpServlet {
     private static final Injector injector = Injector.getInstance("mate.academy");
     private static final ProductService productService = (ProductService) injector
             .getInstance(ProductService.class);
@@ -18,6 +18,6 @@ public class DeleteProductFromStoreController extends HttpServlet {
             throws ServletException, IOException {
         Long id = Long.parseLong(req.getParameter("id"));
         productService.delete(id);
-        resp.sendRedirect(req.getContextPath() + "/products/all_admin");
+        resp.sendRedirect(req.getContextPath() + "/products/all-admin");
     }
 }

@@ -10,7 +10,7 @@ import mate.academy.model.ShoppingCart;
 import mate.academy.service.OrderService;
 import mate.academy.service.ShoppingCartService;
 
-public class CheckoutController extends HttpServlet {
+public class CompleteOrderController extends HttpServlet {
     private static final Long USER_ID = 1L;
     private static final Injector injector = Injector.getInstance("mate.academy");
     private static final OrderService orderService = (OrderService) injector

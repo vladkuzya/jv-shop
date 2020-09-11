@@ -56,7 +56,7 @@
 
     <servlet>
         <servlet-name>deleteProduct</servlet-name>
-        <servlet-class>mate.academy.controllers.product.DeleteProductFromStoreController</servlet-class>
+        <servlet-class>mate.academy.controllers.product.DeleteProductController</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -71,7 +71,7 @@
 
     <servlet-mapping>
         <servlet-name>allProductsForUser</servlet-name>
-        <url-pattern>/products/all_user</url-pattern>
+        <url-pattern>/products/all-user</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -81,7 +81,7 @@
 
     <servlet-mapping>
         <servlet-name>allProductsForAdmin</servlet-name>
-        <url-pattern>/products/all_admin</url-pattern>
+        <url-pattern>/products/all-admin</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -116,12 +116,12 @@
 
     <servlet>
         <servlet-name>checkout</servlet-name>
-        <servlet-class>mate.academy.controllers.order.CheckoutController</servlet-class>
+        <servlet-class>mate.academy.controllers.order.CompleteOrderController</servlet-class>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>checkout</servlet-name>
-        <url-pattern>/checkout</url-pattern>
+        <url-pattern>/orders/complete</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -131,7 +131,7 @@
 
     <servlet-mapping>
         <servlet-name>allOrdersUser</servlet-name>
-        <url-pattern>/orders/all_user</url-pattern>
+        <url-pattern>/orders/all-user</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -141,7 +141,7 @@
 
     <servlet-mapping>
         <servlet-name>allOrdersAdmin</servlet-name>
-        <url-pattern>/orders/all_admin</url-pattern>
+        <url-pattern>/orders/all-admin</url-pattern>
     </servlet-mapping>
 
     <servlet>

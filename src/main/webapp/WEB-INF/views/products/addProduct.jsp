@@ -4,6 +4,7 @@
     <title>Add product</title>
 </head>
 <body>
+<%@include file="/WEB-INF/views/header.jsp" %>
 <h1>Hello! Please provide product parameters</h1>
 <h1 style="color:red">${message}</h1>
 <form method="post" action="${pageContext.request.contextPath}/products/add">
@@ -12,6 +13,6 @@
 
     <button type="submit">Add</button>
 </form>
-<a href="${pageContext.request.contextPath}/">Go to main</a>
+<a class="btn btn-dark" href="${pageContext.request.contextPath}/" role="button">Go to main</a>
 </body>
 </html>

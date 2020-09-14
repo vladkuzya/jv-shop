@@ -1,27 +1,25 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>All users</title>
+    <title>All orders</title>
 </head>
 <body>
 <%@include file="/WEB-INF/views/header.jsp" %>
-<h1>All users page</h1>
 <table border="1">
     <tr>
         <th>ID</th>
-        <th>NAME</th>
+        <th>Products</th>
     </tr>
-    <c:forEach var="user" items="${users}">
+    <c:forEach var="order" items="${orders}">
         <tr>
             <td>
-                <c:out value="${user.id}"/>
+                <c:out value="${order.id}"/>
             </td>
             <td>
-                <c:out value="${user.login}"/>
+                <c:out value="${order.products}"/>
             </td>
             <td>
-                <a href="${pageContext.request.contextPath}/users/delete?id=${user.id}">Delete</a>
+                <a href="${pageContext.request.contextPath}/orders/delete?id=${order.id}">Delete</a>
             </td>
         </tr>
     </c:forEach>

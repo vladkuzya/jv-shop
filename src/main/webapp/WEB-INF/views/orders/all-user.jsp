@@ -2,26 +2,22 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>All users</title>
+    <title>My orders</title>
 </head>
 <body>
 <%@include file="/WEB-INF/views/header.jsp" %>
-<h1>All users page</h1>
 <table border="1">
     <tr>
         <th>ID</th>
-        <th>NAME</th>
+        <th>Products</th>
     </tr>
-    <c:forEach var="user" items="${users}">
+    <c:forEach var="order" items="${orders}">
         <tr>
             <td>
-                <c:out value="${user.id}"/>
+                <c:out value="${order.id}"/>
             </td>
             <td>
-                <c:out value="${user.login}"/>
-            </td>
-            <td>
-                <a href="${pageContext.request.contextPath}/users/delete?id=${user.id}">Delete</a>
+                <c:out value="${order.products}"/>
             </td>
         </tr>
     </c:forEach>

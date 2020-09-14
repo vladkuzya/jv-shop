@@ -10,7 +10,7 @@ import mate.academy.lib.Injector;
 import mate.academy.model.Product;
 import mate.academy.service.ProductService;
 
-public class GetAllProductsController extends HttpServlet {
+public class GetAllProductsForUserController extends HttpServlet {
     private static final Injector injector = Injector.getInstance("mate.academy");
     private static final ProductService productService = (ProductService) injector
             .getInstance(ProductService.class);
@@ -20,6 +20,6 @@ public class GetAllProductsController extends HttpServlet {
             throws ServletException, IOException {
         List<Product> allProducts = productService.getAll();
         req.setAttribute("products", allProducts);
-        req.getRequestDispatcher("/WEB-INF/views/products/all.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/views/products/all-user.jsp").forward(req,resp);
     }
 }

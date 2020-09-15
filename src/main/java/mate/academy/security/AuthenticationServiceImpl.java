@@ -1,10 +1,12 @@
 package mate.academy.security;
 
+import java.util.Optional;
 import mate.academy.exceptions.AuthenticationException;
 import mate.academy.lib.Inject;
 import mate.academy.lib.Service;
 import mate.academy.model.User;
 import mate.academy.service.UserService;
+
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -13,12 +15,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User login(String login, String password) throws AuthenticationException {
-        User userFromDB = userService.findByLogin(login).orElseThrow(() ->
-                new AuthenticationException("No such login exists"));
-
-        if (userFromDB.getPassword().equals(password)) {
-            return userFromDB;
+        Optional<User> optionalUser = userService.findByLogin(login);
+        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
+            return optionalUser.get();
         }
-        throw new AuthenticationException("Incorrect password");
+        throw new AuthenticationException("Login or password is incorrect");
     }
 }

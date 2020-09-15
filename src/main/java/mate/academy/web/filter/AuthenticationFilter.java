@@ -9,11 +9,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mate.academy.controllers.LoginController;
 import mate.academy.lib.Injector;
 import mate.academy.service.UserService;
 
 public class AuthenticationFilter implements Filter {
-    private static final String USER_ID = "user_id";
     private static final Injector injector = Injector.getInstance("mate.academy");
     private static final UserService userService = (UserService) injector
             .getInstance(UserService.class);
@@ -33,7 +33,7 @@ public class AuthenticationFilter implements Filter {
             chain.doFilter(req, resp);
             return;
         }
-        Long userId = (Long) req.getSession().getAttribute(USER_ID);
+        Long userId = (Long) req.getSession().getAttribute(LoginController.USER_ID);
         if (userId == null || userService.getById(userId) == null) {
             resp.sendRedirect(req.getContextPath() + "/users/login");
             return;

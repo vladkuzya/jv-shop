@@ -7,7 +7,6 @@ import mate.academy.lib.Service;
 import mate.academy.model.User;
 import mate.academy.service.UserService;
 
-
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
     @Inject

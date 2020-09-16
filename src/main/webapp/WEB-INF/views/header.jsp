@@ -38,6 +38,12 @@
     <li class="nav-item">
         <a class="nav-link" href="${pageContext.request.contextPath}/orders/all-admin">All orders(admin)</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="${pageContext.request.contextPath}/users/logout">LogOut</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="${pageContext.request.contextPath}/injectData">Inject</a>
+    </li>
 </ul>
 </body>
 </html>

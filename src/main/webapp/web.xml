@@ -21,7 +21,7 @@
 
     <servlet-mapping>
         <servlet-name>injectData</servlet-name>
-        <url-pattern>/injectData</url-pattern>
+        <url-pattern>/inject-data</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -101,7 +101,7 @@
 
     <servlet-mapping>
         <servlet-name>allProductsForUser</servlet-name>
-        <url-pattern>/products/all-user</url-pattern>
+        <url-pattern>/user/products/all</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -111,7 +111,7 @@
 
     <servlet-mapping>
         <servlet-name>allProductsForAdmin</servlet-name>
-        <url-pattern>/products/all-admin</url-pattern>
+        <url-pattern>/admin/products/all</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -161,7 +161,7 @@
 
     <servlet-mapping>
         <servlet-name>allOrdersUser</servlet-name>
-        <url-pattern>/orders/all-user</url-pattern>
+        <url-pattern>/user/orders/</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -171,7 +171,7 @@
 
     <servlet-mapping>
         <servlet-name>allOrdersAdmin</servlet-name>
-        <url-pattern>/orders/all-admin</url-pattern>
+        <url-pattern>/admin/orders/</url-pattern>
     </servlet-mapping>
 
     <servlet>

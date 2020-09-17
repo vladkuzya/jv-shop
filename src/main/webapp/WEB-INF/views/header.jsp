@@ -24,25 +24,25 @@
         <a class="nav-link" href="${pageContext.request.contextPath}/products/add">Add product</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="${pageContext.request.contextPath}/products/all-user">All products</a>
+        <a class="nav-link" href="${pageContext.request.contextPath}/user/products/all">All products</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="${pageContext.request.contextPath}/products/all-admin">All products(admin)</a>
+        <a class="nav-link" href="${pageContext.request.contextPath}/admin/products/all">All products(admin)</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="${pageContext.request.contextPath}/shopping-carts/show">My shopping cart</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="${pageContext.request.contextPath}/orders/all-user">My orders</a>
+        <a class="nav-link" href="${pageContext.request.contextPath}/user/orders/">My orders</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="${pageContext.request.contextPath}/orders/all-admin">All orders(admin)</a>
+        <a class="nav-link" href="${pageContext.request.contextPath}/admin/orders/">All orders(admin)</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="${pageContext.request.contextPath}/users/logout">LogOut</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="${pageContext.request.contextPath}/injectData">Inject</a>
+        <a class="nav-link" href="${pageContext.request.contextPath}/inject-data">Inject</a>
     </li>
 </ul>
 </body>

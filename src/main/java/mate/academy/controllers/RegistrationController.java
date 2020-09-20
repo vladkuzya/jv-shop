@@ -1,11 +1,13 @@
 package mate.academy.controllers;
 
 import java.io.IOException;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mate.academy.lib.Injector;
+import mate.academy.model.Role;
 import mate.academy.model.ShoppingCart;
 import mate.academy.model.User;
 import mate.academy.service.ShoppingCartService;
@@ -33,6 +35,7 @@ public class RegistrationController extends HttpServlet {
 
         if (password.equals(passwordRepeat)) {
             User user = new User(login, password);
+            user.setRoles(Set.of(Role.of("USER")));
             userService.create(user);
             shoppingCartService.create(new ShoppingCart(user.getId()));
             resp.sendRedirect(req.getContextPath() + "/");

@@ -70,18 +70,18 @@ public class ProductDaoJdbcImpl implements ProductDao {
     }
 
     @Override
-    public Product update(Product item) {
+    public Product update(Product product) {
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
                     .prepareStatement("UPDATE products SET name = ?, price = ?"
                             + "WHERE product_id = ? AND deleted = FALSE");
-            statement.setString(1, item.getName());
-            statement.setDouble(2, item.getPrice());
-            statement.setLong(3, item.getId());
+            statement.setString(1, product.getName());
+            statement.setDouble(2, product.getPrice());
+            statement.setLong(3, product.getId());
             statement.executeUpdate();
-            return item;
+            return product;
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't create product" + item.getName(), ex);
+            throw new DataProcessingException("Couldn't create product" + product.getName(), ex);
         }
     }
 

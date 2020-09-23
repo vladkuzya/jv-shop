@@ -26,7 +26,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
             statement.setLong(1, order.getUserId());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 order.setId(resultSet.getLong(1));
             }
             addProductsToDB(connection, order);
@@ -40,8 +40,8 @@ public class OrderDaoJdbcImpl implements OrderDao {
     @Override
     public Optional<Order> getById(Long id) {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM orders o"
+            PreparedStatement statement =
+                    connection.prepareStatement("SELECT * FROM orders o"
                             + "INNER JOIN orders_products op ON op.order_id = o.order_id"
                             + "INNER JOIN products p ON p.product_id = op.product_id"
                             + "WHERE o.order_id = ? AND o.deleted = FALSE");
@@ -51,7 +51,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
                 return Optional.of(getOrderFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting order by id" + id, ex);
+            throw new DataProcessingException("Couldn't get order by id" + id, ex);
         }
         return Optional.empty();
     }
@@ -69,7 +69,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
                 orders.add(getOrderFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting order by user id" + userId, ex);
+            throw new DataProcessingException("Couldn't get order by user id" + userId, ex);
         }
         return orders;
     }
@@ -86,7 +86,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
             }
             return orders;
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting all orders", ex);
+            throw new DataProcessingException("Couldn't get all orders", ex);
         }
     }
 

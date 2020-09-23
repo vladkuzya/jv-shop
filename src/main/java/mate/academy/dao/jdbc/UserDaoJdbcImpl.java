@@ -51,7 +51,7 @@ public class UserDaoJdbcImpl implements UserDao {
                 user = getUserFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting user by id" + id, ex);
+            throw new DataProcessingException("Couldn't get user by id" + id, ex);
         }
         return Optional.ofNullable(user);
     }
@@ -69,7 +69,7 @@ public class UserDaoJdbcImpl implements UserDao {
                 user = getUserFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting user by login" + login, ex);
+            throw new DataProcessingException("Couldn't get user by login" + login, ex);
         }
         return Optional.ofNullable(user);
     }
@@ -86,7 +86,7 @@ public class UserDaoJdbcImpl implements UserDao {
             }
             return users;
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting all users", ex);
+            throw new DataProcessingException("Couldn't get all users", ex);
         }
     }
 

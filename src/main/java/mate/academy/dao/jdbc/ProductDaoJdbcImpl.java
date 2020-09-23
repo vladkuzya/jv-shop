@@ -47,7 +47,7 @@ public class ProductDaoJdbcImpl implements ProductDao {
                 return Optional.of(getProductFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting product by id" + id, ex);
+            throw new DataProcessingException("Couldn't get product by id" + id, ex);
         }
         return Optional.empty();
     }
@@ -64,7 +64,7 @@ public class ProductDaoJdbcImpl implements ProductDao {
             }
             return products;
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting all products", ex);
+            throw new DataProcessingException("Couldn't get all products", ex);
         }
     }
 

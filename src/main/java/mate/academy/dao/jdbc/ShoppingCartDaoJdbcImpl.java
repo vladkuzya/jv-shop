@@ -51,7 +51,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
                 return Optional.of(getCartFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting shopping cart by user id" + id, ex);
+            throw new DataProcessingException("Couldn't get shopping cart by user id" + id, ex);
         }
         return Optional.empty();
     }
@@ -68,7 +68,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
                 return Optional.of(getCartFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting cart by user id" + userId, ex);
+            throw new DataProcessingException("Couldn't get cart by user id" + userId, ex);
         }
         return Optional.empty();
     }
@@ -88,7 +88,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
             }
             return shoppingCarts;
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting all shopping carts", ex);
+            throw new DataProcessingException("Couldn't get all shopping carts", ex);
         }
     }
 

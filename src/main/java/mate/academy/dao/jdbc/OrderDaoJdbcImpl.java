@@ -32,7 +32,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
             addProductsToDB(connection, order);
             return order;
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't create shopping cart with id "
+            throw new DataProcessingException("Couldn't create order with id "
                     + order.getId(), ex);
         }
     }
@@ -51,7 +51,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
                 return Optional.of(getOrderFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't getting shopping cart by user id" + id, ex);
+            throw new DataProcessingException("Couldn't getting order by id" + id, ex);
         }
         return Optional.empty();
     }

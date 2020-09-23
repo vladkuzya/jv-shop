@@ -95,8 +95,8 @@ public class OrderDaoJdbcImpl implements OrderDao {
         try (Connection connection = ConnectionUtil.getConnection()) {
             deleteProductsFromDB(connection, order.getId());
             addProductsToDB(connection, order);
-            PreparedStatement statement = connection.prepareStatement("UPDATE orders"
-                    + "SET user_id = ?\n"
+            PreparedStatement statement = connection.prepareStatement("UPDATE orders "
+                    + "SET user_id = ? "
                     + "WHERE user_id = ? AND deleted = FALSE");
             statement.setLong(1, order.getUserId());
             statement.setLong(2, order.getId());
@@ -122,7 +122,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
     private static List<Product> getProductsFromOrder(long orderId) {
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM products p\n"
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM products p "
                     + "INNER JOIN orders_products op ON p.product_id = op.product_id\n"
                     + "WHERE order_id = ?;");
             statement.setLong(1, orderId);

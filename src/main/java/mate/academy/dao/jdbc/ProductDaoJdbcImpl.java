@@ -72,7 +72,7 @@ public class ProductDaoJdbcImpl implements ProductDao {
     public Product update(Product product) {
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
-                    .prepareStatement("UPDATE products SET name = ?, price = ?"
+                    .prepareStatement("UPDATE products SET name = ?, price = ? "
                             + "WHERE product_id = ? AND deleted = FALSE");
             statement.setString(1, product.getName());
             statement.setDouble(2, product.getPrice());

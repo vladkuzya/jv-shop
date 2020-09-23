@@ -41,9 +41,9 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
     public Optional<ShoppingCart> getById(Long id) {
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM shopping_carts sc"
-                            + "INNER JOIN shopping_carts_products scp ON sc.cart_id = scp.cart_id"
-                            + "INNER JOIN products p ON p.product_id = scp.product_id"
+                    .prepareStatement("SELECT * FROM shopping_carts sc "
+                            + "INNER JOIN shopping_carts_products scp ON sc.cart_id = scp.cart_id "
+                            + "INNER JOIN products p ON p.product_id = scp.product_id "
                             + "WHERE sc.cart_id = ? AND sc.deleted = FALSE");
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -78,9 +78,9 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
         List<ShoppingCart> shoppingCarts = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM shopping_carts sc"
-                            + "INNER JOIN shopping_carts_products scp ON sc.cart_id = scp.cart_id"
-                            + "INNER JOIN products p ON p.product_id = scp.product_id"
+                    .prepareStatement("SELECT * FROM shopping_carts sc "
+                            + "INNER JOIN shopping_carts_products scp ON sc.cart_id = scp.cart_id "
+                            + "INNER JOIN products p ON p.product_id = scp.product_id "
                             + "WHERE sc.deleted = FALSE");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -98,7 +98,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
             deleteProductsFromDB(connection, shoppingCart.getId());
             addProductsToDB(connection, shoppingCart);
             PreparedStatement statement = connection.prepareStatement("UPDATE shopping_carts "
-                    + "SET user_id = ?\n"
+                    + "SET user_id = ? "
                     + "WHERE cart_id = ? AND deleted = FALSE");
             statement.setLong(1, shoppingCart.getUserId());
             statement.setLong(2, shoppingCart.getId());
@@ -124,7 +124,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
     private void addProductsToDB(Connection connection,
                                  ShoppingCart shoppingCart) throws SQLException {
         PreparedStatement statement = connection
-                .prepareStatement("INSERT INTO shopping_carts_products"
+                .prepareStatement("INSERT INTO shopping_carts_products "
                         + "(cart_id, product_id) VALUES (?, ?)");
         statement.setLong(1, shoppingCart.getId());
         for (Product product : shoppingCart.getProducts()) {
@@ -153,8 +153,8 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
     private static List<Product> getProductsFromShoppingCart(long cartId) {
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM products p\n"
-                    + "INNER JOIN shopping_carts_products scp ON p.product_id = scp.product_id\n"
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM products p "
+                    + "INNER JOIN shopping_carts_products scp ON p.product_id = scp.product_id "
                     + "WHERE cart_id = ?;");
             statement.setLong(1, cartId);
             ResultSet resultSet = statement.executeQuery();

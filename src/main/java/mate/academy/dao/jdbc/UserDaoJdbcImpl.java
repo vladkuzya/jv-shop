@@ -94,7 +94,7 @@ public class UserDaoJdbcImpl implements UserDao {
     public User update(User user) {
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
-                    .prepareStatement("UPDATE users SET login = ?, password = ?"
+                    .prepareStatement("UPDATE users SET login = ?, password = ? "
                             + "WHERE user_id = ? AND deleted = FALSE");
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
@@ -133,7 +133,7 @@ public class UserDaoJdbcImpl implements UserDao {
 
     private static User insertIntoRolesUsers(Connection connection, User user) throws SQLException {
         PreparedStatement statement = connection
-                .prepareStatement("INSERT INTO users_roles (user_id, role_id) VALUES (?,?);");
+                .prepareStatement("INSERT INTO users_roles (user_id, role_id) VALUES (?,?)");
         statement.setLong(1, user.getId());
         for (Role role : user.getRoles()) {
             statement.setLong(2, role.getRoleName().ordinal() + 1);

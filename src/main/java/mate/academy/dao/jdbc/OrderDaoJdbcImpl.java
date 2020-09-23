@@ -97,7 +97,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
             addProductsToDB(connection, order);
             PreparedStatement statement = connection.prepareStatement("UPDATE orders "
                     + "SET user_id = ? "
-                    + "WHERE user_id = ? AND deleted = FALSE");
+                    + "WHERE order_id = ? AND deleted = FALSE");
             statement.setLong(1, order.getUserId());
             statement.setLong(2, order.getId());
             statement.executeUpdate();
@@ -110,8 +110,8 @@ public class OrderDaoJdbcImpl implements OrderDao {
     @Override
     public boolean delete(Long id) {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("UPDATE orders SET deleted = TRUE WHERE order_id = ?");
+            PreparedStatement statement =
+                    connection.prepareStatement("UPDATE orders SET deleted = TRUE WHERE order_id = ?");
             statement.setLong(1, id);
             return statement.executeUpdate() == 1;
         } catch (SQLException ex) {
@@ -123,7 +123,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM products p "
-                    + "INNER JOIN orders_products op ON p.product_id = op.product_id\n"
+                    + "INNER JOIN orders_products op ON p.product_id = op.product_id "
                     + "WHERE order_id = ?;");
             statement.setLong(1, orderId);
             ResultSet resultSet = statement.executeQuery();
@@ -141,8 +141,8 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     private void addProductsToDB(Connection connection,
                                  Order order) throws SQLException {
-        PreparedStatement statement = connection
-                .prepareStatement("INSERT INTO orders_products VALUES (?, ?)");
+        PreparedStatement statement =
+                connection.prepareStatement("INSERT INTO orders_products VALUES (?, ?)");
         statement.setLong(1, order.getId());
         for (Product product : order.getProducts()) {
             statement.setLong(2, product.getId());

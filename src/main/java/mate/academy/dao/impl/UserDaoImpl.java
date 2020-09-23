@@ -5,10 +5,8 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import mate.academy.dao.UserDao;
 import mate.academy.db.Storage;
-import mate.academy.lib.Dao;
 import mate.academy.model.User;
 
-@Dao
 public class UserDaoImpl implements UserDao {
     @Override
     public User create(User user) {

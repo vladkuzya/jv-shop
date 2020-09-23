@@ -37,20 +37,19 @@ public class ProductDaoJdbcImpl implements ProductDao {
 
     @Override
     public Optional<Product> getById(Long id) {
-        Product product = null;
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
                     .prepareStatement("SELECT * FROM products WHERE product_id = ?"
                             + " AND deleted = FALSE");
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                product = getProductFromResultSet(resultSet);
+            if (resultSet.next()) {
+                return Optional.of(getProductFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't getting product by id" + id, ex);
         }
-        return Optional.ofNullable(product);
+        return Optional.empty();
     }
 
     @Override
@@ -81,7 +80,7 @@ public class ProductDaoJdbcImpl implements ProductDao {
             statement.executeUpdate();
             return product;
         } catch (SQLException ex) {
-            throw new DataProcessingException("Couldn't create product" + product.getName(), ex);
+            throw new DataProcessingException("Couldn't update product" + product.getName(), ex);
         }
     }
 

@@ -19,10 +19,10 @@ import mate.academy.util.ConnectionUtil;
 public class OrderDaoJdbcImpl implements OrderDao {
     @Override
     public Order create(Order order) {
+        String query = "INSERT INTO orders (user_id) VALUES (?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("INSERT INTO orders (user_id) VALUES (?)",
-                            Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = connection.prepareStatement(query,
+                    Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, order.getUserId());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -41,10 +41,10 @@ public class OrderDaoJdbcImpl implements OrderDao {
     @Override
     public Optional<Order> getById(Long id) {
         Order order = new Order(id);
+        String query = "SELECT * FROM orders "
+                + "WHERE order_id = ? AND deleted = FALSE";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement =
-                    connection.prepareStatement("SELECT * FROM orders "
-                            + "WHERE order_id = ? AND deleted = FALSE");
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -59,10 +59,10 @@ public class OrderDaoJdbcImpl implements OrderDao {
     @Override
     public List<Order> getUserOrders(Long userId) {
         List<Order> orders = new ArrayList<>();
+        String query = "SELECT * FROM orders "
+                + "WHERE user_id = ? AND deleted = FALSE";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM orders "
-                            + "WHERE user_id = ? AND deleted = FALSE");
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, userId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -77,9 +77,9 @@ public class OrderDaoJdbcImpl implements OrderDao {
     @Override
     public List<Order> getAll() {
         List<Order> orders = new ArrayList<>();
+        String query = "SELECT * FROM orders WHERE deleted = FALSE";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM orders WHERE deleted = FALSE");
+            PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 orders.add(getOrderFromResultSet(resultSet));
@@ -92,12 +92,12 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public Order update(Order order) {
+        String query = "UPDATE orders SET user_id = ? "
+                + "WHERE order_id = ? AND deleted = FALSE";
         try (Connection connection = ConnectionUtil.getConnection()) {
             deleteProductsFromDB(connection, order.getId());
             addProductsToDB(connection, order);
-            PreparedStatement statement = connection.prepareStatement("UPDATE orders "
-                    + "SET user_id = ? "
-                    + "WHERE order_id = ? AND deleted = FALSE");
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, order.getUserId());
             statement.setLong(2, order.getId());
             statement.executeUpdate();
@@ -109,10 +109,9 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public boolean delete(Long id) {
+        String query = "UPDATE orders SET deleted = TRUE WHERE order_id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement =
-                    connection.prepareStatement("UPDATE orders "
-                            + "SET deleted = TRUE WHERE order_id = ?");
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, id);
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -122,10 +121,11 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     private List<Product> getProductsFromOrder(long orderId) {
         List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM products p "
+                + "INNER JOIN orders_products op ON p.product_id = op.product_id "
+                + "WHERE order_id = ?";
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM products p "
-                    + "INNER JOIN orders_products op ON p.product_id = op.product_id "
-                    + "WHERE order_id = ?");
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, orderId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -142,8 +142,8 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     private void addProductsToDB(Connection connection,
                                  Order order) {
-        try (PreparedStatement statement =
-                     connection.prepareStatement("INSERT INTO orders_products VALUES (?, ?)")) {
+        String query = "INSERT INTO orders_products VALUES (?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, order.getId());
             for (Product product : order.getProducts()) {
                 statement.setLong(2, product.getId());
@@ -157,9 +157,8 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     private void deleteProductsFromDB(Connection connection,
                                       Long id) throws SQLException {
-        try (PreparedStatement statement =
-                     connection.prepareStatement("DELETE FROM orders_products "
-                             + "WHERE order_id = ?");) {
+        String query = "DELETE FROM orders_products WHERE order_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query);) {
             statement.setLong(1, id);
             statement.executeUpdate();
         }

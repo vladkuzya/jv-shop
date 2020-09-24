@@ -22,8 +22,8 @@ public class UserDaoJdbcImpl implements UserDao {
     @Override
     public User create(User user) {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("INSERT INTO users (login, password) VALUES (?,?);",
+            PreparedStatement statement =
+                    connection.prepareStatement("INSERT INTO users (login, password) VALUES (?,?)",
                             Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
@@ -32,7 +32,7 @@ public class UserDaoJdbcImpl implements UserDao {
             while (resultSet.next()) {
                 user.setId(resultSet.getLong(1));
             }
-            return insertIntoRolesUsers(connection, user);
+            return addUserRoles(connection, user);
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't create user " + user.getLogin(), ex);
         }
@@ -42,8 +42,8 @@ public class UserDaoJdbcImpl implements UserDao {
     public Optional<User> getById(Long id) {
         User user = null;
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM users WHERE user_id = ?"
+            PreparedStatement statement =
+                    connection.prepareStatement("SELECT * FROM users WHERE user_id = ?"
                             + " AND deleted = FALSE");
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -60,8 +60,8 @@ public class UserDaoJdbcImpl implements UserDao {
     public Optional<User> findByLogin(String login) {
         User user = null;
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM users WHERE login = ?"
+            PreparedStatement statement =
+                    connection.prepareStatement("SELECT * FROM users WHERE login = ?"
                             + " AND deleted = FALSE");
             statement.setString(1, login);
             ResultSet resultSet = statement.executeQuery();
@@ -78,8 +78,8 @@ public class UserDaoJdbcImpl implements UserDao {
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM users WHERE deleted = FALSE");
+            PreparedStatement statement =
+                    connection.prepareStatement("SELECT * FROM users WHERE deleted = FALSE");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 users.add(getUserFromResultSet(resultSet));
@@ -93,15 +93,15 @@ public class UserDaoJdbcImpl implements UserDao {
     @Override
     public User update(User user) {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("UPDATE users SET login = ?, password = ? "
+            PreparedStatement statement =
+                    connection.prepareStatement("UPDATE users SET login = ?, password = ? "
                             + "WHERE user_id = ? AND deleted = FALSE");
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
             statement.setLong(3, user.getId());
             statement.executeUpdate();
-            deleteFromRolesUsers(connection, user.getId());
-            insertIntoRolesUsers(connection, user);
+            deleteUserRoles(connection, user.getId());
+            addUserRoles(connection, user);
             return user;
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't update user" + user.getLogin(), ex);
@@ -111,8 +111,9 @@ public class UserDaoJdbcImpl implements UserDao {
     @Override
     public boolean delete(Long id) {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("UPDATE users SET deleted = TRUE WHERE user_id = ?");
+            PreparedStatement statement =
+                    connection.prepareStatement("UPDATE users "
+                            + "SET deleted = TRUE WHERE user_id = ?");
             statement.setLong(1, id);
             return statement.executeUpdate() == 1;
         } catch (SQLException ex) {
@@ -120,7 +121,7 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
-    private static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         long userId = resultSet.getLong("user_id");
         String login = resultSet.getString("login");
         String password = resultSet.getString("password");
@@ -131,24 +132,25 @@ public class UserDaoJdbcImpl implements UserDao {
         return user;
     }
 
-    private static User insertIntoRolesUsers(Connection connection, User user) throws SQLException {
-        PreparedStatement statement = connection
-                .prepareStatement("INSERT INTO users_roles (user_id, role_id) VALUES (?,?)");
+    private User addUserRoles(Connection connection, User user) throws SQLException {
+        PreparedStatement statement =
+                connection.prepareStatement("INSERT INTO users_roles (user_id, role_id) "
+                        + "VALUES (?,?)");
         statement.setLong(1, user.getId());
-        for (Role role : user.getRoles()) {
-            statement.setLong(2, role.getRoleName().ordinal() + 1);
+        for (Role role : getRolesOfUser(user.getId())) {
+            statement.setLong(2, getRoleIdByName(role.getRoleName()));
             statement.executeUpdate();
         }
         user.setRoles(getRolesOfUser(user.getId()));
         return user;
     }
 
-    private static Set<Role> getRolesOfUser(Long userId) {
+    private Set<Role> getRolesOfUser(Long userId) {
         String query = "SELECT role_id, role_name FROM users_roles JOIN roles "
                 + "USING (role_id) WHERE user_id = ?";
         Set<Role> roles = new HashSet<>();
         try (Connection connection = ConnectionUtil.getConnection();
-                    PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, userId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -164,11 +166,28 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
-    private void deleteFromRolesUsers(Connection connection,
-                                      Long id) throws SQLException {
-        PreparedStatement statement = connection
-                .prepareStatement("DELETE FROM users_roles WHERE cart_id = ?");
+    private void deleteUserRoles(Connection connection,
+                                 Long id) throws SQLException {
+        PreparedStatement statement =
+                connection.prepareStatement("DELETE FROM users_roles WHERE cart_id = ?");
         statement.setLong(1, id);
         statement.executeUpdate();
+    }
+
+    private Long getRoleIdByName(Role.RoleName roleName) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            PreparedStatement statement =
+                    connection.prepareStatement("SELECT * FROM roles "
+                            + "WHERE role_name = ?");
+            statement.setString(1, roleName.name());
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getLong("role_id");
+            }
+        } catch (SQLException ex) {
+            throw new DataProcessingException("Can't get roleId with name = "
+                    + roleName.name(), ex);
+        }
+        return null;
     }
 }

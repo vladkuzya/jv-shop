@@ -21,7 +21,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
     public Order create(Order order) {
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
-                    .prepareStatement("INSERT INTO orders (user_id) VALUES (?);",
+                    .prepareStatement("INSERT INTO orders (user_id) VALUES (?)",
                             Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, order.getUserId());
             statement.executeUpdate();
@@ -29,6 +29,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
             if (resultSet.next()) {
                 order.setId(resultSet.getLong(1));
             }
+            statement.close();
             addProductsToDB(connection, order);
             return order;
         } catch (SQLException ex) {
@@ -39,21 +40,20 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public Optional<Order> getById(Long id) {
+        Order order = new Order(id);
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement =
-                    connection.prepareStatement("SELECT * FROM orders o"
-                            + "INNER JOIN orders_products op ON op.order_id = o.order_id"
-                            + "INNER JOIN products p ON p.product_id = op.product_id"
-                            + "WHERE o.order_id = ? AND o.deleted = FALSE");
+                    connection.prepareStatement("SELECT * FROM orders "
+                            + "WHERE order_id = ? AND deleted = FALSE");
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(getOrderFromResultSet(resultSet));
+                order = getOrderFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get order by id" + id, ex);
         }
-        return Optional.empty();
+        return Optional.ofNullable(order);
     }
 
     @Override
@@ -111,7 +111,8 @@ public class OrderDaoJdbcImpl implements OrderDao {
     public boolean delete(Long id) {
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement =
-                    connection.prepareStatement("UPDATE orders SET deleted = TRUE WHERE order_id = ?");
+                    connection.prepareStatement("UPDATE orders "
+                            + "SET deleted = TRUE WHERE order_id = ?");
             statement.setLong(1, id);
             return statement.executeUpdate() == 1;
         } catch (SQLException ex) {
@@ -119,12 +120,12 @@ public class OrderDaoJdbcImpl implements OrderDao {
         }
     }
 
-    private static List<Product> getProductsFromOrder(long orderId) {
+    private List<Product> getProductsFromOrder(long orderId) {
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM products p "
                     + "INNER JOIN orders_products op ON p.product_id = op.product_id "
-                    + "WHERE order_id = ?;");
+                    + "WHERE order_id = ?");
             statement.setLong(1, orderId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -152,13 +153,15 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     private void deleteProductsFromDB(Connection connection,
                                       Long id) throws SQLException {
-        PreparedStatement statement = connection
-                .prepareStatement("DELETE FROM orders_products WHERE order_id = ?");
-        statement.setLong(1, id);
-        statement.executeUpdate();
+        try (PreparedStatement statement =
+                     connection.prepareStatement("DELETE FROM orders_products "
+                             + "WHERE order_id = ?");) {
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        }
     }
 
-    private static Order getOrderFromResultSet(ResultSet resultSet) throws SQLException {
+    private Order getOrderFromResultSet(ResultSet resultSet) throws SQLException {
         long orderId = resultSet.getLong("order_id");
         long userId = resultSet.getLong("user_id");
         Order order = new Order(userId);

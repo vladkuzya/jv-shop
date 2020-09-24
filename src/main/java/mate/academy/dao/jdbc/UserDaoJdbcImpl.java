@@ -32,6 +32,7 @@ public class UserDaoJdbcImpl implements UserDao {
             while (resultSet.next()) {
                 user.setId(resultSet.getLong(1));
             }
+            statement.close();
             return addUserRoles(connection, user);
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't create user " + user.getLogin(), ex);
@@ -53,6 +54,7 @@ public class UserDaoJdbcImpl implements UserDao {
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get user by id" + id, ex);
         }
+        user.setRoles(getRolesOfUser(user.getId()));
         return Optional.ofNullable(user);
     }
 
@@ -115,7 +117,7 @@ public class UserDaoJdbcImpl implements UserDao {
                     connection.prepareStatement("UPDATE users "
                             + "SET deleted = TRUE WHERE user_id = ?");
             statement.setLong(1, id);
-            return statement.executeUpdate() == 1;
+            return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't delete user with id" + id, ex);
         }
@@ -125,24 +127,26 @@ public class UserDaoJdbcImpl implements UserDao {
         long userId = resultSet.getLong("user_id");
         String login = resultSet.getString("login");
         String password = resultSet.getString("password");
-        Set<Role> rolesOfUser = getRolesOfUser(userId);
         User user = new User(login, password);
         user.setId(userId);
-        user.setRoles(rolesOfUser);
         return user;
     }
 
-    private User addUserRoles(Connection connection, User user) throws SQLException {
-        PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO users_roles (user_id, role_id) "
-                        + "VALUES (?,?)");
-        statement.setLong(1, user.getId());
-        for (Role role : getRolesOfUser(user.getId())) {
-            statement.setLong(2, getRoleIdByName(role.getRoleName()));
-            statement.executeUpdate();
+    private User addUserRoles(Connection connection, User user) {
+        try (PreparedStatement statement =
+                     connection.prepareStatement("INSERT INTO users_roles (user_id, role_id) "
+                             + "VALUES (?,?)")) {
+            statement.setLong(1, user.getId());
+            for (Role role : getRolesOfUser(user.getId())) {
+                statement.setLong(2, getRoleIdByName(role.getRoleName()));
+                statement.executeUpdate();
+            }
+            user.setRoles(getRolesOfUser(user.getId()));
+            return user;
+        } catch (SQLException ex) {
+            throw new DataProcessingException("Couldn't add role to user with id"
+                    + user.getId(), ex);
         }
-        user.setRoles(getRolesOfUser(user.getId()));
-        return user;
     }
 
     private Set<Role> getRolesOfUser(Long userId) {
@@ -168,10 +172,14 @@ public class UserDaoJdbcImpl implements UserDao {
 
     private void deleteUserRoles(Connection connection,
                                  Long id) throws SQLException {
-        PreparedStatement statement =
-                connection.prepareStatement("DELETE FROM users_roles WHERE cart_id = ?");
-        statement.setLong(1, id);
-        statement.executeUpdate();
+        try (PreparedStatement statement =
+                     connection.prepareStatement("DELETE FROM users_roles WHERE user_id = ?")) {
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataProcessingException("Couldn't delete role from user with id"
+                    + id, ex);
+        }
     }
 
     private Long getRoleIdByName(Role.RoleName roleName) {
@@ -188,6 +196,6 @@ public class UserDaoJdbcImpl implements UserDao {
             throw new DataProcessingException("Can't get roleId with name = "
                     + roleName.name(), ex);
         }
-        return null;
+        return 1L;
     }
 }

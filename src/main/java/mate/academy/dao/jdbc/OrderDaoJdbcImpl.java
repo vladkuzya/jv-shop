@@ -114,7 +114,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
                     connection.prepareStatement("UPDATE orders "
                             + "SET deleted = TRUE WHERE order_id = ?");
             statement.setLong(1, id);
-            return statement.executeUpdate() == 1;
+            return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't delete order with id" + id, ex);
         }
@@ -141,13 +141,17 @@ public class OrderDaoJdbcImpl implements OrderDao {
     }
 
     private void addProductsToDB(Connection connection,
-                                 Order order) throws SQLException {
-        PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO orders_products VALUES (?, ?)");
-        statement.setLong(1, order.getId());
-        for (Product product : order.getProducts()) {
-            statement.setLong(2, product.getId());
-            statement.executeUpdate();
+                                 Order order) {
+        try (PreparedStatement statement =
+                     connection.prepareStatement("INSERT INTO orders_products VALUES (?, ?)")) {
+            statement.setLong(1, order.getId());
+            for (Product product : order.getProducts()) {
+                statement.setLong(2, product.getId());
+                statement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataProcessingException("Couldn't add products to order with id"
+                    + order.getId(), ex);
         }
     }
 

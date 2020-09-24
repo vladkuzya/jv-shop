@@ -39,6 +39,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
 
     @Override
     public Optional<ShoppingCart> getById(Long id) {
+        ShoppingCart shoppingCart = null;
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection
                     .prepareStatement("SELECT * FROM shopping_carts "
@@ -46,12 +47,13 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(getCartFromResultSet(resultSet));
+                shoppingCart = getCartFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get shopping cart by user id" + id, ex);
         }
-        return Optional.empty();
+        shoppingCart.setProducts(getProductsFromShoppingCart(shoppingCart.getId()));
+        return Optional.ofNullable(shoppingCart);
     }
 
     @Override
@@ -115,31 +117,39 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
                     connection.prepareStatement("UPDATE shopping_carts "
                             + "SET deleted = TRUE WHERE cart_id = ?");
             statement.setLong(1, id);
-            return statement.executeUpdate() == 1;
+            return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't delete cart with id" + id, ex);
         }
     }
 
     private void addProductsToDB(Connection connection,
-                                 ShoppingCart shoppingCart) throws SQLException {
-        PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO shopping_carts_products "
-                        + "(cart_id, product_id) VALUES (?, ?)");
-        statement.setLong(1, shoppingCart.getId());
-        for (Product product : shoppingCart.getProducts()) {
-            statement.setLong(2, product.getId());
-            statement.executeUpdate();
+                                 ShoppingCart shoppingCart) {
+        try (PreparedStatement statement =
+                     connection.prepareStatement("INSERT INTO shopping_carts_products "
+                             + "(cart_id, product_id) VALUES (?, ?)")) {
+            statement.setLong(1, shoppingCart.getId());
+            for (Product product : shoppingCart.getProducts()) {
+                statement.setLong(2, product.getId());
+                statement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataProcessingException("Couldn't add products to cart with id"
+                    + shoppingCart.getId(), ex);
         }
     }
 
     private void deleteProductsFromDB(Connection connection,
                                       Long id) throws SQLException {
-        PreparedStatement statement =
-                connection.prepareStatement("DELETE FROM shopping_carts_products "
-                        + "WHERE cart_id = ?");
-        statement.setLong(1, id);
-        statement.executeUpdate();
+        try (PreparedStatement statement =
+                     connection.prepareStatement("DELETE FROM shopping_carts_products "
+                             + "WHERE cart_id = ?")) {
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataProcessingException("Couldn't delete products from cart with id"
+                    + id, ex);
+        }
     }
 
     private ShoppingCart getCartFromResultSet(ResultSet resultSet) throws SQLException {
@@ -147,7 +157,6 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
         long userId = resultSet.getLong("user_id");
         ShoppingCart shoppingCart = new ShoppingCart(userId);
         shoppingCart.setId(cartId);
-        shoppingCart.setProducts(getProductsFromShoppingCart(cartId));
         return shoppingCart;
     }
 

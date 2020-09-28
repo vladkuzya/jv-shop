@@ -41,6 +41,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
     @Override
     public Optional<Order> getById(Long id) {
         Order order = new Order(id);
+        List<Product> products = getProductsFromOrder(id);
         String query = "SELECT * FROM orders "
                 + "WHERE order_id = ? AND deleted = FALSE";
         try (Connection connection = ConnectionUtil.getConnection()) {
@@ -49,6 +50,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 order = getOrderFromResultSet(resultSet);
+                order.setProducts(products);
             }
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get order by id" + id, ex);
@@ -71,6 +73,9 @@ public class OrderDaoJdbcImpl implements OrderDao {
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get order by user id" + userId, ex);
         }
+        for (Order order : orders) {
+            order.setProducts(getProductsFromOrder(order.getId()));
+        }
         return orders;
     }
 
@@ -84,10 +89,13 @@ public class OrderDaoJdbcImpl implements OrderDao {
             while (resultSet.next()) {
                 orders.add(getOrderFromResultSet(resultSet));
             }
-            return orders;
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get all orders", ex);
         }
+        for (Order order : orders) {
+            order.setProducts(getProductsFromOrder(order.getId()));
+        }
+        return orders;
     }
 
     @Override
@@ -169,7 +177,6 @@ public class OrderDaoJdbcImpl implements OrderDao {
         long userId = resultSet.getLong("user_id");
         Order order = new Order(userId);
         order.setId(orderId);
-        order.setProducts(getProductsFromOrder(orderId));
         return order;
     }
 }

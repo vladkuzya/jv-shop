@@ -40,6 +40,7 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
     @Override
     public Optional<ShoppingCart> getById(Long id) {
         ShoppingCart shoppingCart = null;
+        List<Product> products = getProductsFromShoppingCart(id);
         String query = "SELECT * FROM shopping_carts WHERE cart_id = ? AND deleted = FALSE";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
@@ -47,11 +48,11 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 shoppingCart = getCartFromResultSet(resultSet);
+                shoppingCart.setProducts(products);
             }
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get shopping cart by user id" + id, ex);
         }
-        shoppingCart.setProducts(getProductsFromShoppingCart(shoppingCart.getId()));
         return Optional.ofNullable(shoppingCart);
     }
 
@@ -69,6 +70,9 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get cart by user id" + userId, ex);
         }
+        if (shoppingCart != null) {
+            shoppingCart.setProducts(getProductsFromShoppingCart(shoppingCart.getId()));
+        }
         return Optional.ofNullable(shoppingCart);
     }
 
@@ -85,10 +89,13 @@ public class ShoppingCartDaoJdbcImpl implements ShoppingCartDao {
             while (resultSet.next()) {
                 shoppingCarts.add(getCartFromResultSet(resultSet));
             }
-            return shoppingCarts;
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get all shopping carts", ex);
         }
+        for (ShoppingCart cart : shoppingCarts) {
+            cart.setProducts(getProductsFromShoppingCart(cart.getId()));
+        }
+        return shoppingCarts;
     }
 
     @Override

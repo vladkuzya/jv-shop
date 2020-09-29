@@ -189,7 +189,7 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
-    private Long getRoleIdByName(Role.RoleName roleName) {
+    private Long getRoleIdByName(Role.RoleName roleName) throws RuntimeException {
         Long id = null;
         String query = "SELECT * FROM roles "
                 + "WHERE role_name = ?";
@@ -198,12 +198,15 @@ public class UserDaoJdbcImpl implements UserDao {
                     connection.prepareStatement(query);
             statement.setString(1, roleName.name());
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 id = resultSet.getLong("role_id");
             }
         } catch (SQLException ex) {
             throw new DataProcessingException("Can't get roleId with name = "
                     + roleName.name(), ex);
+        }
+        if (id == null) {
+            throw new RuntimeException("Role with name " + roleName.name() + " is not found");
         }
         return id;
     }

@@ -40,7 +40,7 @@ public class OrderDaoJdbcImpl implements OrderDao {
 
     @Override
     public Optional<Order> getById(Long id) {
-        Order order = new Order(id);
+        Order order = null;
         List<Product> products = getProductsFromOrder(id);
         String query = "SELECT * FROM orders "
                 + "WHERE order_id = ? AND deleted = FALSE";

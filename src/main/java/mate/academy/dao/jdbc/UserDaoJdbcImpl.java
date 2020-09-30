@@ -21,12 +21,13 @@ import mate.academy.util.ConnectionUtil;
 public class UserDaoJdbcImpl implements UserDao {
     @Override
     public User create(User user) {
-        String query = "INSERT INTO users (login, password) VALUES (?,?)";
+        String query = "INSERT INTO users (login, password, salt) VALUES (?,?, ?)";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
+            statement.setBytes(3, user.getSalt());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             while (resultSet.next()) {
@@ -55,7 +56,9 @@ public class UserDaoJdbcImpl implements UserDao {
         } catch (SQLException ex) {
             throw new DataProcessingException("Couldn't get user by id" + id, ex);
         }
-        user.setRoles(getRolesOfUser(user.getId()));
+        if (user != null) {
+            user.setRoles(getRolesOfUser(user.getId()));
+        }
         return Optional.ofNullable(user);
     }
 
@@ -97,14 +100,15 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public User update(User user) {
-        String query = "UPDATE users SET login = ?, password = ? "
+        String query = "UPDATE users SET login = ?, password = ?, salt = ? "
                 + "WHERE user_id = ? AND deleted = FALSE";
         try (Connection connection = ConnectionUtil.getConnection()) {
             PreparedStatement statement =
                     connection.prepareStatement(query);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
-            statement.setLong(3, user.getId());
+            statement.setBytes(3, user.getSalt());
+            statement.setLong(4, user.getId());
             statement.executeUpdate();
             deleteUserRoles(connection, user.getId());
             addUserRoles(connection, user);
@@ -134,6 +138,7 @@ public class UserDaoJdbcImpl implements UserDao {
         String password = resultSet.getString("password");
         User user = new User(login, password);
         user.setId(userId);
+        user.setSalt(resultSet.getBytes("salt"));
         return user;
     }
 
@@ -177,7 +182,7 @@ public class UserDaoJdbcImpl implements UserDao {
     }
 
     private void deleteUserRoles(Connection connection,
-                                 Long id) throws SQLException {
+                                 Long id) {
         String query = "DELETE FROM users_roles WHERE user_id = ?";
         try (PreparedStatement statement =
                      connection.prepareStatement(query)) {
